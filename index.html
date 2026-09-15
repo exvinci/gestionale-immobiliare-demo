@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestionale Immobiliare Studio Indipendente</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --brand-primary: #1e3a8a;
+      --brand-secondary: #0d9488;
+      --brand-bg: #f8fafc;
+    }
+
+    body {
+      background-color: var(--brand-bg);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .bg-brand-primary { background-color: var(--brand-primary) !important; }
+    .text-brand-primary { color: var(--brand-primary) !important; }
+    .btn-brand-primary {
+      background-color: var(--brand-primary) !important;
+      border-color: var(--brand-primary) !important;
+      color: #ffffff !important;
+    }
+    .btn-brand-primary:hover { filter: brightness(0.9); }
+
+    .header-agency-logo {
+      max-height: 50px;
+      object-fit: contain;
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--brand-primary) !important;
+    }
+
+    /* Anteprime Immagini nel Form */
+    .img-preview-container {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #dee2e6;
+    }
+    .img-preview-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .btn-delete-img {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(220, 53, 69, 0.9);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    /* Anteprima Logo Agenzia */
+    .logo-preview-box {
+      width: 100%;
+      height: 60px;
+      border: 1px dashed #ced4da;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      overflow: hidden;
+    }
+    .logo-preview-box img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    /* REGOLE DI STAMPA A4 */
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      body * {
+        visibility: hidden !important;
+      }
+
+      #printReport, #printReport * {
+        visibility: visible !important;
+      }
+
+      #printReport {
+        position: absolute !important;
+        left: 12mm !important;
+        top: 12mm !important;
+        right: 12mm !important;
+        width: calc(100% - 24mm) !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background-color: #ffffff !important;
+      }
+
+      body {
+        background-color: #ffffff !important;
+        font-size: 10.5pt;
+        color: #1a1a1a;
+      }
+
+      .print-header {
+        border-bottom: 2px solid var(--brand-primary);
+        padding-bottom: 12px;
+        margin-bottom: 20px;
+      }
+
+      .print-gallery-img {
+        height: 220px !important;
+        object-fit: cover !important;
+        border-radius: 6px !important;
+      }
+
+      .key-feature-box {
+        border: 1px solid #e2e8f0 !important;
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Gestionale -->
+  <header class="bg-white border-bottom shadow-sm py-3 mb-4">
+    <div class="container d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <img id="headerAgencyLogo" src="" alt="Logo" class="header-agency-logo" style="display: none;">
+        <div>
+          <h4 id="headerAgencyName" class="m-0 fw-bold text-dark">Studio Immobiliare Indipendente</h4>
+          <small id="headerAgencyContacts" class="text-muted"></small>
+        </div>
+      </div>
+      <span class="badge bg-brand-primary fs-6 px-3 py-2">Software Gestionale</span>
+    </div>
+  </header>
+
+  <div class="container pb-5">
+
+    <!-- Menu Tab Navigazione -->
+    <ul class="nav nav-pills mb-4" id="mainTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-semibold" id="brand-tab" data-bs-toggle="pill" data-bs-target="#brand-panel" type="button" role="tab">
+          <i class="fas fa-sliders-h me-2"></i>1. Profilo Agenzia
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold" id="property-tab" data-bs-toggle="pill" data-bs-target="#property-panel" type="button" role="tab">
+          <i class="fas fa-home me-2"></i>2. Dati Immobile & Foto
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold" id="calc-tab" data-bs-toggle="pill" data-bs-target="#calc-panel" type="button" role="tab">
+          <i class="fas fa-calculator me-2"></i>3. Simulatore Mutuo
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold" id="copy-tab" data-bs-toggle="pill" data-bs-target="#copy-panel" type="button" role="tab">
+          <i class="fas fa-print me-2"></i>4. Scheda Stampa Finale
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="mainTabContent">
+
+      <!-- TAB 1: PROFILO AGENZIA -->
+      <div class="tab-pane fade show active" id="brand-panel" role="tabpanel">
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="card-title m-0 fw-bold text-dark"><i class="fas fa-building text-brand-primary me-2"></i>Dati dell'Agenzia</h5>
+          </div>
+          <div class="card-body">
+            <form id="brandForm" onsubmit="event.preventDefault(); saveAgencyProfile();">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Nome Studio / Ragione Sociale</label>
+                  <input type="text" id="agencyName" class="form-control" placeholder="Es. Immobiliare Central" required>
+                </div>
+
+                <!-- CARICAMENTO LOGO DA FILE -->
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Upload Logo Agenzia</label>
+                  <input type="file" id="agencyLogoFile" class="form-control" accept="image/*" onchange="handleLogoUpload(event)">
+                </div>
+                <div class="col-md-2">
+                  <label class="form-label fw-semibold">Anteprima</label>
+                  <div class="logo-preview-box">
+                    <img id="logoPreview" src="" alt="Nessun Logo" style="display:none;">
+                    <span id="logoPreviewText" class="text-muted small">Vuoto</span>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Colore Principale Brand</label>
+                  <input type="color" id="agencyPrimaryColor" class="form-control form-control-color w-100" value="#1e3a8a">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Indirizzo Sede</label>
+                  <input type="text" id="agencyAddress" class="form-control" placeholder="Via Roma 10, Milano">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold">Telefono / Email</label>
+                  <input type="text" id="agencyContacts" class="form-control" placeholder="02 123456 | info@studio.it">
+                </div>
+              </div>
+              <div class="mt-4 text-end">
+                <button type="submit" class="btn btn-brand-primary px-4 fw-semibold">Salva Profilo</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: DATI IMMOBILE -->
+      <div class="tab-pane fade" id="property-panel" role="tabpanel">
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="card-title m-0 fw-bold text-dark"><i class="fas fa-home text-brand-primary me-2"></i>Informazioni Immobile</h5>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-8">
+                <label class="form-label fw-semibold">Titolo / Indirizzo Indicativo</label>
+                <input type="text" id="propTitle" class="form-control" placeholder="Es. Luminoso Trilocale con Terrazzo - Zona Centrale" oninput="updateReportPreview()">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Prezzo (€)</label>
+                <input type="number" id="propPrice" class="form-control" placeholder="250000" oninput="updateReportPreview(); updateMortgageDefault();">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold">Superficie (mq)</label>
+                <input type="number" id="propSqm" class="form-control" placeholder="90" oninput="updateReportPreview()">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold">Locali / Vani</label>
+                <input type="text" id="propRooms" class="form-control" placeholder="Es. 3 Locali (2 Camere)" oninput="updateReportPreview()">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold">Tipologia</label>
+                <input type="text" id="propType" class="form-control" placeholder="Es. Appartamento / Attico" oninput="updateReportPreview()">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold">Classe Energetica</label>
+                <select id="propEnergyClass" class="form-select" onchange="updateReportPreview()">
+                  <option value="A4">A4</option>
+                  <option value="A1-A3">A1-A3</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                  <option value="G" selected>G</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-semibold">Sintesi Descrizione (Poche righe essenziali)</label>
+                <textarea id="propFeatures" class="form-control" rows="3" placeholder="Es. Splendido appartamento completamente ristrutturato, composto da ingresso, ampio soggiorno con cucina a vista, due camere da letto e bagno. Completano la proprietà un balcone vivibile e una cantina." oninput="updateReportPreview()"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="card-title m-0 fw-bold text-dark"><i class="fas fa-images text-brand-primary me-2"></i>Foto dell'Immobile (Max 2 consigliate per il layout)</h5>
+          </div>
+          <div class="card-body">
+            <input type="file" id="propImagesInput" class="form-control mb-3" accept="image/*" multiple onchange="handleImageUpload(event)">
+            <div id="imagePreviewContainer" class="row g-3"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: SIMULATORE MUTUO -->
+      <div class="tab-pane fade" id="calc-panel" role="tabpanel">
+        <div class="row justify-content-center">
+          <div class="col-md-12">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title m-0 fw-bold text-dark">
+                  <i class="fas fa-calculator text-brand-primary me-2"></i>Calcolatore Rata Mutuo (Uso Interno Agenzia)
+                </h5>
+              </div>
+              <div class="card-body">
+                <p class="text-muted small mb-4">
+                  Utilizza questo simulatore durante i colloqui con i clienti per fornire una stima immediata del piano di ammortamento. <em>I dati calcolati qui non verranno inclusi nella scheda di stampa.</em>
+                </p>
+
+                <div class="row g-3 mb-4">
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Importo Finanziato (€)</label>
+                    <input type="number" id="mortgageAmount" class="form-control" value="200000" oninput="calculateMortgage()">
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label fw-semibold">Durata (Anni)</label>
+                    <input type="number" id="mortgageYears" class="form-control" value="25" oninput="calculateMortgage()">
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label fw-semibold">Tasso d'Interesse (%)</label>
+                    <input type="number" id="mortgageRate" class="form-control" step="0.05" value="3.5" oninput="calculateMortgage()">
+                  </div>
+                </div>
+
+                <div class="p-4 bg-light rounded text-center border">
+                  <span class="text-muted d-block mb-1 fw-semibold">RATA MENSILE STIMATA</span>
+                  <h1 class="text-brand-primary fw-bold display-5 m-0" id="calcMonthlyPayment">€ 0</h1>
+                  <small class="text-muted d-block mt-2" id="calcTotalInterest">Interessi totali previsti: € 0</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: SCHEDA STAMPA FINALE -->
+      <div class="tab-pane fade" id="copy-panel" role="tabpanel">
+
+        <div class="text-end mb-3">
+          <button class="btn btn-brand-primary px-4 py-2 fw-semibold" onclick="window.print()">
+            <i class="fas fa-print me-2"></i>Stampa Scheda / Salva PDF
+          </button>
+        </div>
+
+        <div id="printReport" class="card p-4 border rounded shadow-sm bg-white">
+
+          <div class="d-flex justify-content-between align-items-center print-header">
+            <div>
+              <h3 id="reportAgencyName" class="fw-bold text-brand-primary mb-1">Studio Immobiliare Indipendente</h3>
+              <p id="reportAgencyMeta" class="text-muted mb-0 small">Indirizzo e Contatti</p>
+            </div>
+            <img id="reportAgencyLogo" class="header-agency-logo" alt="Logo Agenzia" style="display:none;">
+          </div>
+
+          <div class="mb-4 text-center">
+            <h4 id="reportPropTitle" class="fw-bold text-dark mb-1">Trilocale di Prestigio</h4>
+            <span class="text-muted small">Scheda Informativa Immobiliare</span>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-3">
+              <div class="p-3 rounded key-feature-box text-center">
+                <span class="text-muted small d-block uppercase fw-semibold">PREZZO</span>
+                <strong id="reportPropPrice" class="fs-5 text-brand-primary">-</strong>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-3 rounded key-feature-box text-center">
+                <span class="text-muted small d-block uppercase fw-semibold">SUPERFICIE</span>
+                <strong id="reportPropSqm" class="fs-5 text-dark">-</strong>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-3 rounded key-feature-box text-center">
+                <span class="text-muted small d-block uppercase fw-semibold">LOCALI</span>
+                <strong id="reportPropRooms" class="fs-5 text-dark">-</strong>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-3 rounded key-feature-box text-center">
+                <span class="text-muted small d-block uppercase fw-semibold">CLASSE EN.</span>
+                <strong id="reportPropEnergy" class="fs-5 text-dark">-</strong>
+              </div>
+            </div>
+          </div>
+
+          <div id="reportGallerySection" class="mb-4" style="display:none;">
+            <div id="reportGalleryGrid" class="row g-3"></div>
+          </div>
+
+          <div class="mb-4">
+            <h6 class="fw-bold text-dark border-bottom pb-2 mb-2">Descrizione dell'Immobile</h6>
+            <p id="reportPropDesc" class="text-secondary lh-base mb-0" style="white-space: pre-line;">Inserisci una breve descrizione per popolare questa sezione.</p>
+          </div>
+
+          <div class="mt-auto pt-3 border-top text-center text-muted small">
+            <p class="mb-0">Per informazioni, appuntamenti o consulenze di fattibilità finanziaria, contattare lo studio. Le presenti informazioni non costituiscono elemento contrattuale.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let uploadedImages = [];
+    let uploadedLogoBase64 = "";
+
+    function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedLogoBase64 = e.target.result;
+        renderLogoPreview(uploadedLogoBase64);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function renderLogoPreview(src) {
+      const img = document.getElementById('logoPreview');
+      const text = document.getElementById('logoPreviewText');
+      if (src) {
+        img.src = src;
+        img.style.display = 'block';
+        text.style.display = 'none';
+      } else {
+        img.src = '';
+        img.style.display = 'none';
+        text.style.display = 'inline';
+      }
+    }
+
+    function saveAgencyProfile() {
+      const profile = {
+        name: document.getElementById('agencyName').value,
+        logo: uploadedLogoBase64,
+        primaryColor: document.getElementById('agencyPrimaryColor').value,
+        address: document.getElementById('agencyAddress').value,
+        contacts: document.getElementById('agencyContacts').value
+      };
+
+      localStorage.setItem('independentAgencyProfile', JSON.stringify(profile));
+      applyAgencyProfile(profile);
+      alert('Profilo agenzia e logo salvati con successo.');
+    }
+
+    function loadAgencyProfile() {
+      const saved = localStorage.getItem('independentAgencyProfile');
+      if (saved) {
+        const profile = JSON.parse(saved);
+        if (document.getElementById('agencyName')) document.getElementById('agencyName').value = profile.name || '';
+        if (document.getElementById('agencyPrimaryColor')) document.getElementById('agencyPrimaryColor').value = profile.primaryColor || '#1e3a8a';
+        if (document.getElementById('agencyAddress')) document.getElementById('agencyAddress').value = profile.address || '';
+        if (document.getElementById('agencyContacts')) document.getElementById('agencyContacts').value = profile.contacts || '';
+
+        if (profile.logo) {
+          uploadedLogoBase64 = profile.logo;
+          renderLogoPreview(profile.logo);
+        }
+
+        applyAgencyProfile(profile);
+      }
+    }
+
+    function applyAgencyProfile(profile) {
+      document.documentElement.style.setProperty('--brand-primary', profile.primaryColor || '#1e3a8a');
+
+      const logoEl = document.getElementById('headerAgencyLogo');
+      if (logoEl) {
+        if (profile.logo) {
+          logoEl.src = profile.logo;
+          logoEl.style.display = 'inline-block';
+        } else {
+          logoEl.style.display = 'none';
+        }
+      }
+
+      const nameEl = document.getElementById('headerAgencyName');
+      if (nameEl) nameEl.textContent = profile.name || 'Studio Immobiliare Indipendente';
+
+      const contactsEl = document.getElementById('headerAgencyContacts');
+      if (contactsEl) contactsEl.textContent = `${profile.address || ''} ${profile.contacts ? '| ' + profile.contacts : ''}`;
+
+      const repName = document.getElementById('reportAgencyName');
+      if (repName) repName.textContent = profile.name || 'Studio Immobiliare Indipendente';
+
+      const repMeta = document.getElementById('reportAgencyMeta');
+      if (repMeta) repMeta.textContent = `${profile.address || ''} ${profile.contacts ? '| Tel/Email: ' + profile.contacts : ''}`;
+
+      const repLogo = document.getElementById('reportAgencyLogo');
+      if (repLogo) {
+        if (profile.logo) {
+          repLogo.src = profile.logo;
+          repLogo.style.display = 'inline-block';
+        } else {
+          repLogo.style.display = 'none';
+        }
+      }
+    }
+
+    function handleImageUpload(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedImages.push(e.target.result);
+          renderImagePreviews();
+          updateReportPreview();
+        };
+        reader.readAsDataURL(file);
+      });
+      event.target.value = '';
+    }
+
+    function removeImage(index) {
+      uploadedImages.splice(index, 1);
+      renderImagePreviews();
+      updateReportPreview();
+    }
+
+    function renderImagePreviews() {
+      const container = document.getElementById('imagePreviewContainer');
+      container.innerHTML = '';
+
+      uploadedImages.forEach((imgSrc, idx) => {
+        const col = document.createElement('div');
+        col.className = 'col-6 col-md-3';
+        col.innerHTML = `
+          <div class="img-preview-container">
+            <img src="${imgSrc}" alt="Foto ${idx + 1}">
+            <button type="button" class="btn-delete-img" onclick="removeImage(${idx})" title="Elimina">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(col);
+      });
+    }
+
+    function updateMortgageDefault() {
+      const price = parseFloat(document.getElementById('propPrice').value) || 0;
+      if (price > 0) {
+        document.getElementById('mortgageAmount').value = Math.round(price * 0.8);
+        calculateMortgage();
+      }
+    }
+
+    function calculateMortgage() {
+      const amount = parseFloat(document.getElementById('mortgageAmount').value) || 0;
+      const years = parseFloat(document.getElementById('mortgageYears').value) || 0;
+      const rate = parseFloat(document.getElementById('mortgageRate').value) || 0;
+
+      if (amount > 0 && years > 0 && rate > 0) {
+        const monthlyRate = (rate / 100) / 12;
+        const totalPayments = years * 12;
+        const monthlyPayment = (amount * monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) / (Math.pow(1 + monthlyRate, totalPayments) - 1);
+        const totalPaid = monthlyPayment * totalPayments;
+        const totalInterest = totalPaid - amount;
+
+        document.getElementById('calcMonthlyPayment').textContent = '€ ' + monthlyPayment.toLocaleString('it-IT', {maximumFractionDigits: 2}) + ' / mese';
+        document.getElementById('calcTotalInterest').textContent = 'Interessi totali previsti: € ' + totalInterest.toLocaleString('it-IT', {maximumFractionDigits: 0});
+      } else {
+        document.getElementById('calcMonthlyPayment').textContent = '€ 0';
+        document.getElementById('calcTotalInterest').textContent = 'Interessi totali previsti: € 0';
+      }
+    }
+
+    function updateReportPreview() {
+      const title = document.getElementById('propTitle').value || 'Scheda Immobile';
+      const price = document.getElementById('propPrice').value ? '€ ' + parseFloat(document.getElementById('propPrice').value).toLocaleString('it-IT') : 'Trattativa Riservata';
+      const sqm = document.getElementById('propSqm').value ? document.getElementById('propSqm').value + ' mq' : '-';
+      const rooms = document.getElementById('propRooms').value || '-';
+      const features = document.getElementById('propFeatures').value || 'Nessuna descrizione inserita.';
+
+      document.getElementById('reportPropTitle').textContent = title;
+      document.getElementById('reportPropPrice').textContent = price;
+      document.getElementById('reportPropSqm').textContent = sqm;
+      document.getElementById('reportPropRooms').textContent = rooms;
+      document.getElementById('reportPropEnergy').textContent = document.getElementById('propEnergyClass').value;
+      document.getElementById('reportPropDesc').textContent = features;
+
+      const reportGallerySection = document.getElementById('reportGallerySection');
+      const reportGalleryGrid = document.getElementById('reportGalleryGrid');
+
+      if (uploadedImages.length > 0) {
+        reportGallerySection.style.display = 'block';
+        reportGalleryGrid.innerHTML = '';
+
+        const imagesToShow = uploadedImages.slice(0, 2);
+        let colClass = imagesToShow.length === 1 ? 'col-12' : 'col-6';
+
+        imagesToShow.forEach(imgSrc => {
+          const col = document.createElement('div');
+          col.className = colClass;
+          col.innerHTML = `<img src="${imgSrc}" class="img-fluid print-gallery-img w-100" alt="Foto Immobile">`;
+          reportGalleryGrid.appendChild(col);
+        });
+      } else {
+        reportGallerySection.style.display = 'none';
+        reportGalleryGrid.innerHTML = '';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAgencyProfile();
+      calculateMortgage();
+      updateReportPreview();
+    });
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
