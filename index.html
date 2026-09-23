@@ -127,12 +127,6 @@
         background-color: #ffffff !important;
       }
 
-      /* Forza la griglia dei dati su 4 colonne durante la stampa A4 */
-      .key-feature-col {
-        flex: 0 0 auto !important;
-        width: 25% !important;
-      }
-
       body {
         background-color: #ffffff !important;
         font-size: 10.5pt;
@@ -195,7 +189,7 @@
 
   <!-- Header Gestionale -->
   <header class="bg-white border-bottom shadow-sm py-3 mb-4">
-    <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="container d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center gap-3">
         <img id="headerAgencyLogo" src="" alt="Logo" class="header-agency-logo" style="display: none;">
         <div>
@@ -417,27 +411,26 @@
             <span class="text-muted small">Scheda Informativa Immobiliare</span>
           </div>
 
-          <!-- GRIGLIA DATI PRINCIPALI: RIGHE SU MOBILE / COLONNE SU DESKTOP E STAMPA -->
-          <div class="row g-2 g-md-3 mb-4">
-            <div class="col-12 col-sm-6 col-md-3 key-feature-col">
+          <div class="row g-3 mb-4">
+            <div class="col-3">
               <div class="p-3 rounded key-feature-box text-center">
                 <span class="text-muted small d-block uppercase fw-semibold">PREZZO</span>
                 <strong id="reportPropPrice" class="fs-5 text-brand-primary">-</strong>
               </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-3 key-feature-col">
+            <div class="col-3">
               <div class="p-3 rounded key-feature-box text-center">
                 <span class="text-muted small d-block uppercase fw-semibold">SUPERFICIE</span>
                 <strong id="reportPropSqm" class="fs-5 text-dark">-</strong>
               </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-3 key-feature-col">
+            <div class="col-3">
               <div class="p-3 rounded key-feature-box text-center">
                 <span class="text-muted small d-block uppercase fw-semibold">LOCALI</span>
                 <strong id="reportPropRooms" class="fs-5 text-dark">-</strong>
               </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-3 key-feature-col">
+            <div class="col-3">
               <div class="p-3 rounded key-feature-box text-center">
                 <span class="text-muted small d-block uppercase fw-semibold">CLASSE EN.</span>
                 <strong id="reportPropEnergy" class="fs-5 text-dark">-</strong>
