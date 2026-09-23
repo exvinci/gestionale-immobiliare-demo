@@ -96,6 +96,11 @@
 
     /* REGOLE DI STAMPA A4 */
     @media print {
+      /* Nasconde il banner demo di navigazione durante la stampa */
+      .demo-screen-banner {
+        display: none !important;
+      }
+
       @page {
         size: A4;
         margin: 0;
@@ -173,6 +178,14 @@
   </style>
 </head>
 <body>
+
+  <!-- BANNER AVVISO DEMO A SCHERMO -->
+  <div class="demo-screen-banner bg-warning text-dark text-center py-2 px-3 fw-semibold small border-bottom d-flex align-items-center justify-content-center flex-wrap gap-2">
+    <span><i class="fas fa-info-circle me-1"></i> Stai utilizzando la <strong>Versione Demo Valutativa</strong>.</span>
+    <a href="https://wa.me/393291487854" target="_blank" class="btn btn-sm btn-dark ms-1 py-1 px-3 rounded-pill fw-bold" style="font-size: 0.8rem;">
+      <i class="fab fa-whatsapp me-1"></i> Richiedi Licenza Completa
+    </a>
+  </div>
 
   <!-- Header Gestionale -->
   <header class="bg-white border-bottom shadow-sm py-3 mb-4">
@@ -376,12 +389,12 @@
 
         <div id="printReport" class="card p-4 border rounded shadow-sm bg-white" style="position: relative;">
 
-          <!-- WATERMARK DEMO VALUTATIVA -->
+          <!-- WATERMARK DEMO VALUTATIVA IN STAMPA -->
           <div class="print-watermark">
             VERSIONE DEMO VALUTATIVA<br>
             <span style="font-size: 18px; font-weight: 600;">
               Uso commerciale non consentito<br>
-              Contatta Vincenzo Casolino WhatsApp (+39 3291487854)
+              Contatta Vincenzo Casolino (+39 3291487854)
             </span>
           </div>
 
